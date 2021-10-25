@@ -1,2 +1,4 @@
 # Models-and-metods-for-processing-big-data
-BSUIR
+Project created for subject "Models and metods for processing big data" at BSUIR. 
+
+https://cneos.jpl.nasa.gov/fireballs/#
