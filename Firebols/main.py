@@ -1,9 +1,10 @@
-#https://ssd-api.jpl.nasa.gov/doc/fireball.html
+# https://ssd-api.jpl.nasa.gov/doc/fireball.html
 
 import sqlite3
+import requests
 
-def create_db(cursor):
-
+#creating table for saving data
+def create_table(cursor):
     create_table = ''' CREATE TABLE fireballs_4 (
                                 id INTEGER PRIMARY KEY,
                                 data_time TEXT NOT NULL,
@@ -20,6 +21,8 @@ def create_db(cursor):
     cursor.execute(create_table)
     print("db was created_5")
 
+
+# creating connection and cursor
 def connect():
     try:
         sqllite_connection = sqlite3.connect('sqllite_python.db')
@@ -36,11 +39,20 @@ def connect():
 
     return sqllite_connection, cursor
 
+
+# closing connection
 def close_connection(connection, cursor):
     cursor.close()
     connection.close()
 
+def getting_data_with_api():
+    #responce = requests.get("https://ssd-api.jpl.nasa.gov/fireball.api")
+    res = requests.get("https://ssd-api.jpl.nasa.gov/fireball.api")
+    print(res.json())
+
 if __name__ == '__main__':
-    connection, cursor = connect()
-    create_db(cursor)
-    close_connection(connection, cursor)
+    #connection, cursor = connect()
+    #create_db(cursor)
+    #close_connection(connection, cursor)
+
+    getting_data_with_api()
