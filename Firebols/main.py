@@ -5,38 +5,6 @@ import requests
 import json
 
 
-# creating tabel with autoreading fields (doesn't work)
-def create_table_test(cursor):
-    with open('data.json', 'r') as f:
-        jData = json.load(f)
-        f = jData["fields"]
-        d = jData["data"]
-
-        request = '''CREATE TABLE fireballs_test (
-                    ''''''
-        '''
-
-        for field in f:
-            for data in range(len(data)):
-                if type(d[0, data]) == str:
-                    pass
-
-    create_table = ''' CREATE TABLE fireballs_test (
-                                id INTEGER PRIMARY KEY,
-                                data_time TEXT NOT NULL,
-                                Latitude TEXT,
-                                Longitude TEXT,
-                                Altitude REAL,
-                                Velocity_vx REAL,
-                                Velocity_vy REAL,
-                                Velocity_vz REAL,
-                                Velocity_conponents TEXT,
-                                Total_radiated_energy TEXT,
-                                Calculated_total_impact_energy REAL);  '''
-
-    cursor.execute(create_table)
-    print("db was created_test")
-
 # creating table for saving data
 def create_table(cursor):
     create_table = ''' CREATE TABLE fireballs (
