@@ -2,21 +2,22 @@
 
 import sqlite3
 import requests
+import json
 
 #creating table for saving data
 def create_table(cursor):
-    create_table = ''' CREATE TABLE fireballs_4 (
+    create_table = ''' CREATE TABLE fireballs (
                                 id INTEGER PRIMARY KEY,
                                 data_time TEXT NOT NULL,
-                                Latitude TEXT NOT NULL,
-                                Longitude TEXT NOT NULL,
-                                Altitude REAL NOT NULL,
-                                Velocity_vx REAL NOT NULL,
-                                Velocity_vy REAL NOT NULL,
-                                Velocity_vz REAL NOT NULL,
-                                Velocity_conponents TEXT NOT NULL,
-                                Total_radiated_energy TEXT NOT NULL,
-                                Calculated_total_impact_energy REAL NOT NULL);  '''
+                                Latitude TEXT,
+                                Longitude TEXT,
+                                Altitude REAL,
+                                Velocity_vx REAL,
+                                Velocity_vy REAL,
+                                Velocity_vz REAL,
+                                Velocity_conponents TEXT,
+                                Total_radiated_energy TEXT,
+                                Calculated_total_impact_energy REAL);  '''
 
     cursor.execute(create_table)
     print("db was created_5")
@@ -46,13 +47,27 @@ def close_connection(connection, cursor):
     connection.close()
 
 def getting_data_with_api():
-    #responce = requests.get("https://ssd-api.jpl.nasa.gov/fireball.api")
-    res = requests.get("https://ssd-api.jpl.nasa.gov/fireball.api")
-    print(res.json())
+    res = requests.get("https://ssd-api.jpl.nasa.gov/fireball.api?date-min=2021-09-29")
+    todos = json.loads(res.text)
+    print(todos)
+
+    with open('data.json', 'w') as f:
+        json.dump(todos, f)
+
+def parsing_data():
+    with open('data.json', 'r') as f:
+        jData = json.load(f)
+        print(jData)
+        d = jData["fields"]
+        print(d)
+        print(type(d))
+
 
 if __name__ == '__main__':
     #connection, cursor = connect()
-    #create_db(cursor)
+    #create_table(cursor)
     #close_connection(connection, cursor)
 
-    getting_data_with_api()
+    #getting_data_with_api()
+
+    parsing_data()
