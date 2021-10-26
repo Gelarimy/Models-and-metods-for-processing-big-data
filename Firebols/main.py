@@ -2,21 +2,54 @@
 
 import sqlite3
 import requests
+import json
 
-#creating table for saving data
-def create_table(cursor):
-    create_table = ''' CREATE TABLE fireballs_4 (
+
+# creating tabel with autoreading fields (doesn't work)
+def create_table_test(cursor):
+    with open('data.json', 'r') as f:
+        jData = json.load(f)
+        f = jData["fields"]
+        d = jData["data"]
+
+        request = '''CREATE TABLE fireballs_test (
+                    ''''''
+        '''
+
+        for field in f:
+            for data in range(len(data)):
+                if type(d[0, data]) == str:
+                    pass
+
+    create_table = ''' CREATE TABLE fireballs_test (
                                 id INTEGER PRIMARY KEY,
                                 data_time TEXT NOT NULL,
-                                Latitude TEXT NOT NULL,
-                                Longitude TEXT NOT NULL,
-                                Altitude REAL NOT NULL,
-                                Velocity_vx REAL NOT NULL,
-                                Velocity_vy REAL NOT NULL,
-                                Velocity_vz REAL NOT NULL,
-                                Velocity_conponents TEXT NOT NULL,
-                                Total_radiated_energy TEXT NOT NULL,
-                                Calculated_total_impact_energy REAL NOT NULL);  '''
+                                Latitude TEXT,
+                                Longitude TEXT,
+                                Altitude REAL,
+                                Velocity_vx REAL,
+                                Velocity_vy REAL,
+                                Velocity_vz REAL,
+                                Velocity_conponents TEXT,
+                                Total_radiated_energy TEXT,
+                                Calculated_total_impact_energy REAL);  '''
+
+    cursor.execute(create_table)
+    print("db was created_test")
+
+# creating table for saving data
+def create_table(cursor):
+    create_table = ''' CREATE TABLE fireballs (
+                                id INTEGER PRIMARY KEY,
+                                date TEXT NOT NULL,
+                                energy TEXT,
+                                impact_e TEXT,
+                                lat TEXT,
+                                lat_dir TEXT,
+                                lon TEXT,
+                                lon_dir TEXT,
+                                alt TEXT,
+                                vel TEXT);  '''
 
     cursor.execute(create_table)
     print("db was created_5")
@@ -45,14 +78,51 @@ def close_connection(connection, cursor):
     cursor.close()
     connection.close()
 
+
 def getting_data_with_api():
-    #responce = requests.get("https://ssd-api.jpl.nasa.gov/fireball.api")
     res = requests.get("https://ssd-api.jpl.nasa.gov/fireball.api")
-    print(res.json())
+    todos = json.loads(res.text)
+    print(todos)
+
+    with open('data.json', 'w') as f:
+        json.dump(todos, f)
+
+
+# reading data from json-file
+def parsing_data():
+    with open('data.json', 'r') as f:
+        jData = json.load(f)
+        print(jData)
+        d = jData["fields"]
+        print(d)
+        print(type(d))
+
+
+# full db
+def writting_to_db(cur):
+    lst = []
+
+    connection.commit()
+    with open('data.json', 'r') as f:
+        data = json.load(f)
+
+        for d in data["data"]:
+            lst = d
+            cur.execute(
+                "INSERT INTO fireballs(date, energy, impact_e, lat, lat_dir, lon, lon_dir, alt, vel) VALUES(?,?,?,?,?,?,?,?,?);",
+                lst)
+
+        connection.commit()
+
 
 if __name__ == '__main__':
-    #connection, cursor = connect()
-    #create_db(cursor)
-    #close_connection(connection, cursor)
+    connection, cursor = connect()
+    create_table(cursor)
 
     getting_data_with_api()
+
+    # parsing_data()
+
+    writting_to_db(cursor)
+
+    close_connection(connection, cursor)
